@@ -1,0 +1,565 @@
+-- made by Saiko#5258 im skid cry son loll
+-- join uvv https://discord.gg/3yTXng3caM
+
+local ScreenGui = Instance.new("ScreenGui")
+local main = Instance.new("Frame")
+local gokupng = Instance.new("ImageLabel")
+local gokuwaretext = Instance.new("TextLabel")
+local lock1 = Instance.new("TextButton")
+local qlocktext = Instance.new("TextLabel")
+local check1 = Instance.new("ImageLabel")
+local lock2 = Instance.new("TextButton")
+local rightclicktext = Instance.new("TextLabel")
+local check2 = Instance.new("ImageLabel")
+local norecoil = Instance.new("TextButton")
+local recoiltext = Instance.new("TextLabel")
+local check3 = Instance.new("ImageLabel")
+local anti = Instance.new("TextButton")
+local antilocktext = Instance.new("TextLabel")
+local check4 = Instance.new("ImageLabel")
+local TextLabel = Instance.new("TextLabel")
+local headlesskorblox = Instance.new("TextButton")
+local check5 = Instance.new("ImageButton")
+local infotext = Instance.new("TextLabel")
+
+--Properties:
+
+ScreenGui.Parent = game.CoreGui 
+
+main.Name = "main"
+main.Parent = ScreenGui
+main.Active = true
+main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+main.BorderColor3 = Color3.fromRGB(255, 106, 0)
+main.BorderSizePixel = 3
+main.Position = UDim2.new(0.49344641, 0, 0.238036811, 0)
+main.Size = UDim2.new(0, 316, 0, 462)
+main.Active = true
+main.Draggable = true
+
+gokupng.Name = "gokupng"
+gokupng.Parent = main
+gokupng.Active = true
+gokupng.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+gokupng.BackgroundTransparency = 1.000
+gokupng.BorderColor3 = Color3.fromRGB(53, 53, 53)
+gokupng.Position = UDim2.new(0, 0, 0.058441557, 0)
+gokupng.Size = UDim2.new(0, 316, 0, 434)
+gokupng.Image = "rbxassetid://9590353821"
+gokupng.ImageTransparency = 0.800
+
+gokuwaretext.Name = "gokuwaretext"
+gokuwaretext.Parent = main
+gokuwaretext.Active = true
+gokuwaretext.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+gokuwaretext.BorderColor3 = Color3.fromRGB(255, 255, 255)
+gokuwaretext.Position = UDim2.new(0.0221518986, 0, 0.012987013, 0)
+gokuwaretext.Size = UDim2.new(0, 301, 0, 21)
+gokuwaretext.Font = Enum.Font.SourceSansBold
+gokuwaretext.Text = "GOKUWARE"
+gokuwaretext.TextColor3 = Color3.fromRGB(255, 128, 0)
+gokuwaretext.TextSize = 41.000
+
+lock1.Name = "lock1"
+lock1.Parent = main
+lock1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+lock1.Position = UDim2.new(0.0949367136, 0, 0.129870132, 0)
+lock1.Size = UDim2.new(0, 28, 0, 28)
+lock1.Font = Enum.Font.SourceSans
+lock1.Text = ""
+lock1.TextColor3 = Color3.fromRGB(0, 0, 0)
+lock1.TextSize = 14.000
+lock1.MouseButton1Down:Connect(function()
+	local Settings = {
+		AimLock = {
+			Enabled = true,
+			Aimlockkey = "q",
+			Prediction = 0.11567724521, -- change the sets here, change here for sets and locks https://discord.gg/yj7XNJ7Spy
+			Aimpart = 'Head',
+			Notifications = false
+		},
+		Settings = {
+			Thickness = 3,5,
+			Transparency = 1,
+			Color = Color3.fromRGB(255, 0, 0),
+			FOV = false
+		}
+
+	}
+
+	local CurrentCamera = game:GetService("Workspace").CurrentCamera
+	local Inset = game:GetService("GuiService"):GetGuiInset().Y
+	local RunService = game:GetService("RunService")
+
+	local Mouse = game.Players.LocalPlayer:GetMouse()
+	local LocalPlayer = game.Players.LocalPlayer
+
+	local Line = Drawing.new("Line")
+	local Circle = Drawing.new("Circle")
+
+	local Plr
+
+	Mouse.KeyDown:Connect(function(KeyPressed)
+		if KeyPressed == (Settings.AimLock.Aimlockkey) then
+			if Settings.AimLock.Enabled == true then
+				Settings.AimLock.Enabled = false
+				if Settings.AimLock.Notifications == true then
+					Plr = FindClosestPlayer()
+					game.StarterGui:SetCore("SendNotification", {
+						Title = "Private",
+						Text = "Unlocked"
+					})
+				end
+			else
+				Plr = FindClosestPlayer()
+				Settings.AimLock.Enabled = true
+				if Settings.AimLock.Notifications == true then
+					game.StarterGui:SetCore("SendNotification", {
+						Title = "Private",
+						Text = "Locked On :  " .. tostring(Plr.Character.Humanoid.DisplayName)
+					})
+				end
+			end
+		end
+	end)
+
+	function FindClosestPlayer()
+		local ClosestDistance, ClosestPlayer = math.huge, nil;
+		for _, Player in next, game:GetService("Players"):GetPlayers() do
+			local ISNTKNOCKED = Player.Character:WaitForChild("BodyEffects")["K.O"].Value ~= true
+			local ISNTGRABBED = Player.Character:FindFirstChild("GRABBING_COINSTRAINT") == nil
+
+			if Player ~= LocalPlayer then
+				local Character = Player.Character
+				if Character and Character.Humanoid.Health > 1 and ISNTKNOCKED and ISNTGRABBED then
+					local Position, IsVisibleOnViewPort = CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart
+						.Position)
+					if IsVisibleOnViewPort then
+						local Distance = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Position.X, Position.Y)).Magnitude
+						if Distance < ClosestDistance then
+							ClosestPlayer = Player
+							ClosestDistance = Distance
+						end
+					end
+				end
+			end
+		end
+		return ClosestPlayer, ClosestDistance
+	end
+
+	RunService.Heartbeat:connect(function()
+		if Settings.AimLock.Enabled == true then
+			local Vector = CurrentCamera:WorldToViewportPoint(Plr.Character[Settings.AimLock.Aimpart].Position +
+				(Plr.Character[Settings.AimLock.Aimpart].Velocity *
+					Settings.AimLock.Prediction))
+			Line.Color = Settings.Settings.Color
+			Line.Transparency = Settings.Settings .Transparency
+			Line.Thickness = Settings.Settings .Thickness
+			Line.From = Vector2.new(Mouse.X, Mouse.Y + Inset)
+			Line.To = Vector2.new(Vector.X, Vector.Y)
+			Line.Visible = true
+			Circle.Position = Vector2.new(Mouse.X, Mouse.Y + Inset)
+			Circle.Visible = Settings.Settings.FOV
+			Circle.Thickness = 1.5
+			Circle.Thickness = 2
+			Circle.Radius = 60
+			Circle.Color = Settings.Settings.Color
+		elseif Settings.AimLock.FOV == true then
+			Circle.Visible = true
+		else
+			Circle.Visible = false
+			Line.Visible = false
+		end
+	end)
+
+	local mt = getrawmetatable(game)
+	local old = mt.__namecall
+	setreadonly(mt, false)
+	mt.__namecall = newcclosure(function(...)
+		local args = {...}
+		if Settings.AimLock.Enabled and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
+			args[3] = Plr.Character[Settings.AimLock.Aimpart].Position +
+				(Plr.Character[Settings.AimLock.Aimpart].Velocity * Settings.AimLock.Prediction)
+
+			return old(unpack(args))
+		end
+		return old(...)
+	end)
+end)
+
+qlocktext.Name = "qlocktext"
+qlocktext.Parent = lock1
+qlocktext.Active = true
+qlocktext.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+qlocktext.Position = UDim2.new(1.47784805, 0, -0.0129870176, 0)
+qlocktext.Size = UDim2.new(0, 236, 0, 28)
+qlocktext.Font = Enum.Font.Code
+qlocktext.Text = "Q to Lock"
+qlocktext.TextColor3 = Color3.fromRGB(0, 0, 0)
+qlocktext.TextSize = 28.000
+
+check1.Name = "check1"
+check1.Parent = lock1
+check1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+check1.Position = UDim2.new(-0.0142361484, 0, -0.0142910182, 0)
+check1.Size = UDim2.new(0, 28, 0, 28)
+check1.Visible = false
+check1.Image = "rbxassetid://9590504977"
+
+lock2.Name = "lock2"
+lock2.Parent = main
+lock2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+lock2.Position = UDim2.new(0.0949367136, 0, 0.248917758, 0)
+lock2.Size = UDim2.new(0, 28, 0, 28)
+lock2.Font = Enum.Font.SourceSans
+lock2.Text = ""
+lock2.TextColor3 = Color3.fromRGB(0, 0, 0)
+lock2.TextSize = 14.000
+lock2.MouseButton1Down:Connect(function()
+	local CC = game:GetService"Workspace".CurrentCamera
+	local accomidationfactor = 0.11 -- once again change the sets here, join for sets and locks https://discord.gg/yj7XNJ7Spy
+	local mouse = game.Players.LocalPlayer:GetMouse()
+	local placemarker = Instance.new("Part", game.Workspace)
+	local enabled = falseWD
+	local Plr
+
+	function makemarker(Parent, Adornee, Color, Size, Size2)
+		local e = Instance.new("BillboardGui", Parent)
+		e.Name = "PP"
+		e.Adornee = Adornee
+		e.Size = UDim2.new(Size, Size2, Size, Size2)
+		e.AlwaysOnTop = true
+		local a = Instance.new("Frame", e)
+		a.Size = UDim2.new(1, 0, 1, 0)
+		a.BackgroundTransparency = 0
+		a.BackgroundColor3 = Color
+		local g = Instance.new("UICorner", a)
+		g.CornerRadius = UDim.new(25, 25)
+		return(e)
+	end
+
+
+	local data = game.Players:GetPlayers()
+	function noob(player)
+		local character
+		repeat wait() until player.Character
+		local handler = makemarker(guimain, player.Character:WaitForChild("LowerTorso"), Color3.fromRGB(107, 184, 255), 0.3, 3)
+		handler.Name = player.Name
+		player.CharacterAdded:connect(function(Char) handler.Adornee = Char:WaitForChild("LowerTorso") end)
+
+
+		spawn(function()
+			while wait() do
+				if player.Character then
+					TextLabel.Text = player.Name..tostring(player:WaitForChild("leaderstats").Wanted.Value).." | "..tostring(math.floor(player.Character:WaitForChild("Humanoid").Health))
+				end
+			end
+		end)
+	end
+
+	for i = 1, #data do
+		if data[i] ~= game.Players.LocalPlayer then
+			noob(data[i])
+		end
+	end
+
+	game.Players.PlayerAdded:connect(function(Player)
+		noob(Player)
+	end)
+
+	spawn(function()
+		placemarker.Anchored = true
+		placemarker.CanCollide = false
+		placemarker.Size = Vector3.new(8, 8, 8)
+		placemarker.Transparency = 0.75
+		makemarker(placemarker, placemarker, Color3.fromRGB(232, 186, 200), 0.40, 0)
+	end)    
+
+	local UserInputService = game:GetService"UserInputService"
+
+	UserInputService.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton2 then
+			enabled = true 
+			Plr = getClosestPlayerToCursor()
+			guimain[Plr.Name].Frame.BackgroundColor3 = Color3.fromRGB(214, 155, 232)
+		end
+	end)
+
+	UserInputService.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton2 then
+			enabled = false
+			guimain[Plr.Name].Frame.BackgroundColor3 = Color3.fromRGB(214, 155, 232)
+		end
+	end)
+
+	function getClosestPlayerToCursor()
+		local closestPlayer
+		local shortestDistance = math.huge
+
+		for i, v in pairs(game.Players:GetPlayers()) do
+			if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Head") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") then
+				local pos = CC:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+				local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(mouse.X, mouse.Y)).magnitude
+				if magnitude < shortestDistance then
+					closestPlayer = v
+					shortestDistance = magnitude
+				end
+			end
+		end
+		return closestPlayer
+	end
+
+	game:GetService"RunService".Stepped:connect(function()
+		if enabled and Plr.Character and Plr.Character:FindFirstChild("LowerTorso") then
+			placemarker.CFrame = CFrame.new(Plr.Character.HumanoidRootPart.Position+(Plr.Character.HumanoidRootPart.Velocity*accomidationfactor))
+		else
+			placemarker.CFrame = CFrame.new(0, 9999, 0)
+		end
+	end)
+
+	local mt = getrawmetatable(game)
+	local old = mt.__namecall
+	setreadonly(mt, false)
+	mt.__namecall = newcclosure(function(...)
+		local args = {...}
+		if enabled and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
+			args[3] = Plr.Character.HumanoidRootPart.Position+(Plr.Character.HumanoidRootPart.Velocity*accomidationfactor)
+			return old(unpack(args))
+		end
+		return old(...)
+	end)
+end)
+
+rightclicktext.Name = "rightclicktext"
+rightclicktext.Parent = lock2
+rightclicktext.Active = true
+rightclicktext.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+rightclicktext.Position = UDim2.new(1.47784805, 0, -0.00108225644, 0)
+rightclicktext.Size = UDim2.new(0, 236, 0, 28)
+rightclicktext.Font = Enum.Font.Code
+rightclicktext.Text = "Right Click on Person To Lock"
+rightclicktext.TextColor3 = Color3.fromRGB(0, 0, 0)
+rightclicktext.TextSize = 15.000
+
+check2.Name = "check2"
+check2.Parent = lock2
+check2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+check2.Position = UDim2.new(-0.0142361447, 0, -0.00238624215, 0)
+check2.Size = UDim2.new(0, 28, 0, 28)
+check2.Visible = false
+check2.Image = "rbxassetid://9590504977"
+
+norecoil.Name = "norecoil"
+norecoil.Parent = main
+norecoil.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+norecoil.Position = UDim2.new(0.0949366987, 0, 0.36796537, 0)
+norecoil.Size = UDim2.new(0, 28, 0, 28)
+norecoil.Font = Enum.Font.SourceSans
+norecoil.Text = ""
+norecoil.TextColor3 = Color3.fromRGB(0, 0, 0)
+norecoil.TextSize = 14.000
+norecoil.MouseButton1Down:Connect(function()
+	local CurrentFocus = game:GetService("Workspace").CurrentCamera.CFrame
+	game:GetService("Workspace").CurrentCamera:Destroy()
+	local Instance = Instance.new("Camera", game:GetService("Workspace"))
+	Instance.CameraSubject = game:GetService("Players").LocalPlayer.Character.Humanoid
+	Instance.CameraType = Enum.CameraType.Custom
+	Instance.CFrame = CurrentFocus
+end)
+
+recoiltext.Name = "recoiltext"
+recoiltext.Parent = norecoil
+recoiltext.Active = true
+recoiltext.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+recoiltext.Position = UDim2.new(1.47784805, 0, -0.0248917639, 0)
+recoiltext.Size = UDim2.new(0, 236, 0, 28)
+recoiltext.Font = Enum.Font.Code
+recoiltext.Text = "No Recoil"
+recoiltext.TextColor3 = Color3.fromRGB(0, 0, 0)
+recoiltext.TextSize = 35.000
+
+check3.Name = "check3"
+check3.Parent = norecoil
+check3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+check3.Position = UDim2.new(-0.0142361484, 0, -0.0261957645, 0)
+check3.Size = UDim2.new(0, 28, 0, 28)
+check3.Visible = false
+check3.Image = "rbxassetid://9590504977"
+
+anti.Name = "anti"
+anti.Parent = main
+anti.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+anti.Position = UDim2.new(0.0949366987, 0, 0.482683986, 0)
+anti.Size = UDim2.new(0, 28, 0, 28)
+anti.Font = Enum.Font.SourceSans
+anti.Text = ""
+anti.TextColor3 = Color3.fromRGB(0, 0, 0)
+anti.TextSize = 14.000
+anti.MouseButton1Down:Connect(function()
+	local Zenaki = false
+
+	function onKeyPress(inputObject, gameProcessedEvent)
+		if inputObject.KeyCode == Enum.KeyCode.Y and gameProcessedEvent == false then
+			if Zenaki == false then
+				Zenaki = true
+
+			elseif Zenaki == true then
+				Zenaki = false
+
+
+			end
+		end
+	end
+
+	game:GetService("UserInputService").InputBegan:connect(onKeyPress)
+
+
+	game:GetService("RunService").RenderStepped:Connect(function()
+		if Zenaki == true then
+			game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 14
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(3.50), 0)
+		end
+
+	end)
+	loadstring(game:HttpGet("https://gist.githubusercontent.com/murderspree/84309f4b27fc481923f1a647c204826d/raw/a1134751b9ab8cdae1b4fbc7db9230516d8d0eca/gistfile1.txt"))()
+end)
+
+antilocktext.Name = "antilocktext"
+antilocktext.Parent = anti
+antilocktext.Active = true
+antilocktext.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+antilocktext.Position = UDim2.new(1.47784805, 0, -0.0194805264, 0)
+antilocktext.Size = UDim2.new(0, 236, 0, 29)
+antilocktext.Font = Enum.Font.Code
+antilocktext.Text = "Semi Anti-Lock"
+antilocktext.TextColor3 = Color3.fromRGB(0, 0, 0)
+antilocktext.TextSize = 27.000
+
+check4.Name = "check4"
+check4.Parent = anti
+check4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+check4.Position = UDim2.new(-0.0142361447, 0, -0.0186200142, 0)
+check4.Size = UDim2.new(0, 28, 0, 28)
+check4.Visible = false
+check4.Image = "rbxassetid://9590504977"
+
+TextLabel.Parent = anti
+TextLabel.Active = true
+TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.Position = UDim2.new(1.45596397, 0, 1.97450078, 0)
+TextLabel.Size = UDim2.new(0, 236, 0, 29)
+TextLabel.Font = Enum.Font.Code
+TextLabel.Text = "Headless & Korblox"
+TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.TextSize = 22.000
+
+headlesskorblox.Name = "headlesskorblox"
+headlesskorblox.Parent = main
+headlesskorblox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+headlesskorblox.Position = UDim2.new(0.0920314789, 0, 0.602950633, 0)
+headlesskorblox.Size = UDim2.new(0, 28, 0, 29)
+headlesskorblox.Font = Enum.Font.SourceSans
+headlesskorblox.Text = ""
+headlesskorblox.TextColor3 = Color3.fromRGB(0, 0, 0)
+headlesskorblox.TextSize = 14.000
+headlesskorblox.MouseButton1Down:Connect(function()
+	game.Players.LocalPlayer.Character.Head.Transparency = 1
+	game.Players.LocalPlayer.Character.Head.Transparency = 1
+	for i,v in pairs(game.Players.LocalPlayer.Character.Head:GetChildren()) do
+		if (v:IsA("Decal")) then
+			v.Transparency = 1
+		end
+	end
+	---------------HeadLess Above-----------------------------
+	---------------NON FE -----------------------------
+	---------------Korblox Below-----------------------------
+	local ply = game.Players.LocalPlayer
+	local chr = ply.Character
+	chr.RightLowerLeg.MeshId = "902942093"
+	chr.RightLowerLeg.Transparency = "1"
+	chr.RightUpperLeg.MeshId = "http://www.roblox.com/asset/?id=902942096"
+	chr.RightUpperLeg.TextureID = "http://roblox.com/asset/?id=902843398"
+	chr.RightFoot.MeshId = "902942089"
+	chr.RightFoot.Transparency = "1"
+end)
+
+check5.Name = "check5"
+check5.Parent = headlesskorblox
+check5.Active = false
+check5.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+check5.Position = UDim2.new(0, 0, -0.034481708, 0)
+check5.Size = UDim2.new(0, 28, 0, 29)
+check5.Visible = false
+check5.Image = "rbxassetid://9590504977"
+
+infotext.Name = "infotext"
+infotext.Parent = main
+infotext.Active = true
+infotext.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+infotext.Position = UDim2.new(0.0221518986, 0, 0.811688304, 0)
+infotext.Size = UDim2.new(0, 301, 0, 79)
+infotext.Font = Enum.Font.SourceSans
+infotext.Text = "INFO:\\n - 'v' to open/close GUI\\n - This is a troll GUI don't expect a PWv2 or something lol\\n - eternal#0300\\n - Can't uncheck yet lol cry"
+infotext.TextColor3 = Color3.fromRGB(0, 0, 0)
+infotext.TextSize = 15.000
+
+-- Scripts:
+
+local function COYP_fake_script() -- check1.LocalScript 
+	local script = Instance.new('LocalScript', check1)
+
+	script.Parent.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Active = true
+		script.Parent.Visible = true
+	end)
+end
+coroutine.wrap(COYP_fake_script)()
+local function JGBUPD_fake_script() -- check2.LocalScript 
+	local script = Instance.new('LocalScript', check2)
+
+	script.Parent.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Active = true
+		script.Parent.Visible = true
+	end)
+end
+coroutine.wrap(JGBUPD_fake_script)()
+local function AQLV_fake_script() -- check3.LocalScript 
+	local script = Instance.new('LocalScript', check3)
+
+	script.Parent.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Active = true
+		script.Parent.Visible = true
+	end)
+end
+coroutine.wrap(AQLV_fake_script)()
+local function RHKWLU_fake_script() -- check4.LocalScript 
+	local script = Instance.new('LocalScript', check4)
+
+	script.Parent.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Active = true
+		script.Parent.Visible = true
+	end)
+end
+coroutine.wrap(RHKWLU_fake_script)()
+local function HATROB_fake_script() -- check5.LocalScript 
+	local script = Instance.new('LocalScript', check5)
+
+	script.Parent.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Active = true
+		script.Parent.Visible = true
+	end)
+end
+coroutine.wrap(HATROB_fake_script)()
+local function XZKAIL_fake_script() -- main.LocalScript 
+	local script = Instance.new('LocalScript', main)
+
+	local HotKey = Enum.KeyCode.V
+	local UIS = game:GetService("UserInputService")
+	
+	UIS.InputBegan:Connect(function(Key)
+		if Key.KeyCode == HotKey then
+			script.Parent.Visible = not script.Parent.Visible
+		end
+	end)
+end
+coroutine.wrap(XZKAIL_fake_script)()
